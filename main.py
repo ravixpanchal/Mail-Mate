@@ -15,15 +15,15 @@ st.markdown("""
 
 :root {
     --bg:       #0A0C14;
-    --surface:  #111420;
-    --surface2: #161926;
-    --border:   #1E2235;
-    --border2:  #252A40;
-    --accent:   #7B5CF5;
-    --accent2:  #06D6A0;
-    --accent3:  #F72585;
-    --text:     #E8EAF6;
-    --muted:    #6B7280;
+    --surface:  #0D1208;
+    --surface2: #111A0E;
+    --border:   #1A2414;
+    --border2:  #1E2E18;
+    --accent:   #22C55E;
+    --accent2:  #4ADE80;
+    --accent3:  #86EFAC;
+    --text:     #E8F5E9;
+    --muted:    #5A7A5E;
     --radius:   12px;
     --radius-sm:8px;
 }
@@ -44,8 +44,8 @@ html, body,
     position: fixed;
     inset: 0;
     background-image:
-        linear-gradient(rgba(123,92,245,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(123,92,245,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(34,197,94,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,197,94,0.04) 1px, transparent 1px);
     background-size: 48px 48px;
     pointer-events: none;
     z-index: 0;
@@ -75,8 +75,8 @@ html, body,
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: rgba(123,92,245,0.08);
-    border: 1px solid rgba(123,92,245,0.25);
+    background: rgba(34,197,94,0.08);
+    border: 1px solid rgba(34,197,94,0.25);
     border-radius: 99px;
     padding: 6px 18px 6px 8px;
     margin-bottom: 1.75rem;
@@ -85,15 +85,15 @@ html, body,
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #A99BFF;
+    color: #86EFAC;
 }
 .mm-topbadge .dot {
     width: 28px; height: 28px;
-    background: linear-gradient(135deg, var(--accent), #4F46E5);
+    background: linear-gradient(135deg, var(--accent), #16A34A);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-size: 0.85rem;
-    box-shadow: 0 0 12px rgba(123,92,245,0.5);
+    box-shadow: 0 0 12px rgba(34,197,94,0.5);
 }
 .mm-topbadge .live {
     width: 6px; height: 6px;
@@ -176,14 +176,14 @@ textarea::placeholder,
 .stTextArea > div > div > textarea::placeholder,
 [data-baseweb="textarea"] textarea::placeholder,
 [data-baseweb="input"] input::placeholder {
-    color: #3A3F55 !important;
-    -webkit-text-fill-color: #3A3F55 !important;
+    color: #1A3320 !important;
+    -webkit-text-fill-color: #1A3320 !important;
 }
 textarea:focus,
 .stTextInput > div > div > input:focus,
 .stTextArea > div > div > textarea:focus {
     border-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px rgba(123,92,245,0.15), 0 0 20px rgba(123,92,245,0.08) !important;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.15), 0 0 20px rgba(34,197,94,0.08) !important;
     outline: none !important;
 }
 
@@ -208,13 +208,13 @@ textarea:focus,
     background: var(--surface2) !important;
 }
 [data-baseweb="menu"] li:hover {
-    background: rgba(123,92,245,0.12) !important;
+    background: rgba(34,197,94,0.12) !important;
 }
 
 /* ── Buttons ── */
 .stButton > button {
     width: 100%;
-    background: linear-gradient(135deg, var(--accent) 0%, #4F46E5 100%);
+    background: linear-gradient(135deg, var(--accent) 0%, #16A34A 100%);
     color: #fff !important;
     font-family: 'DM Sans', sans-serif !important;
     font-weight: 700 !important;
@@ -225,12 +225,12 @@ textarea:focus,
     cursor: pointer;
     letter-spacing: 0.03em;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: 0 4px 24px rgba(123,92,245,0.3);
+    box-shadow: 0 4px 24px rgba(34,197,94,0.3);
     text-transform: uppercase;
 }
 .stButton > button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(123,92,245,0.45);
+    box-shadow: 0 8px 32px rgba(34,197,94,0.45);
 }
 .stButton > button:active { transform: translateY(0); }
 
@@ -244,7 +244,7 @@ textarea:focus,
 /* ── Footer ── */
 .mm-footer {
     text-align: center;
-    color: #3A3F55;
+    color: #2D5A33;
     font-size: 0.75rem;
     margin-top: 3rem;
     padding-top: 1.25rem;
@@ -258,8 +258,8 @@ textarea:focus,
 [data-testid="stAlert"] {
     border-radius: var(--radius-sm) !important;
     font-family: 'DM Sans', sans-serif !important;
-    background: rgba(123,92,245,0.08) !important;
-    border: 1px solid rgba(123,92,245,0.2) !important;
+    background: rgba(34,197,94,0.08) !important;
+    border: 1px solid rgba(34,197,94,0.2) !important;
 }
 [data-testid="stSpinner"] p {
     font-family: 'DM Sans', sans-serif !important;
@@ -267,8 +267,7 @@ textarea:focus,
 }
 [data-testid="stCaptionContainer"] p {
     font-family: 'DM Sans', sans-serif !important;
-    color: #3A3F55 !important;
-    font-size: 0.75rem !important;
+    color: #2D5A33 !important;
 }
 [data-testid="stCode"] { border-radius: var(--radius-sm) !important; }
 
