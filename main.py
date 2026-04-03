@@ -108,6 +108,18 @@ html, body, [data-testid="stAppViewContainer"] {
 .mm-card:hover { box-shadow: var(--shadow-hover); }
 @media (max-width: 480px) { .mm-card { padding: 1.1rem; } }
 
+/* ── Streamlit native labels ── */
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] label,
+label[data-testid="stWidgetLabel"] {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    color: var(--muted) !important;
+}
+
 /* ── Section labels ── */
 .mm-label {
     font-size: 0.73rem;
@@ -277,7 +289,7 @@ textarea:focus,
 # ── Hero ───────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="mm-hero">
-    <div class="mm-badge">✨ Powered by Gemini 1.5 Flash</div>
+    <div class="mm-badge">✨ Powered by Gemini 2.0 Flash</div>
     <h1>📧 <span>MailMate</span></h1>
     <p>Paste an email · pick a tone · get a polished reply in seconds</p>
 </div>
@@ -290,47 +302,37 @@ if "last_tone" not in st.session_state:
     st.session_state.last_tone = ""
 
 # ── Input card ─────────────────────────────────────────────────────────────────
-st.markdown('<div class="mm-card">', unsafe_allow_html=True)
-
-st.markdown('<div class="mm-label">📨 Original Email</div>', unsafe_allow_html=True)
-email_text = st.text_area(
-    label="email_input",
-    label_visibility="collapsed",
-    placeholder="Paste the email you received here…",
-    height=190,
-    key="email_input"
-)
-
-col1, col2 = st.columns([1, 1], gap="medium")
-with col1:
-    st.markdown('<div class="mm-label" style="margin-top:0.75rem">🎭 Tone</div>', unsafe_allow_html=True)
-    tone = st.selectbox(
-        label="tone_select",
-        label_visibility="collapsed",
-        options=["Professional", "Friendly", "Apologetic", "Persuasive", "Concise"],
-        key="tone_select"
-    )
-with col2:
-    st.markdown('<div class="mm-label" style="margin-top:0.75rem">📬 Recipient Email</div>', unsafe_allow_html=True)
-    recipient_email = st.text_input(
-        label="recipient_input",
-        label_visibility="collapsed",
-        placeholder="recipient@example.com",
-        key="recipient_input"
+# Use Streamlit's native label system styled via CSS (avoids blank ghost boxes)
+with st.container():
+    email_text = st.text_area(
+        label="📨 Original Email",
+        placeholder="Paste the email you received here…",
+        height=190,
+        key="email_input"
     )
 
-st.markdown('<div class="mm-label" style="margin-top:0.75rem">💬 Extra Instructions <span style="font-weight:400;text-transform:none;font-size:0.78rem">(optional)</span></div>', unsafe_allow_html=True)
-custom_note = st.text_input(
-    label="custom_note",
-    label_visibility="collapsed",
-    placeholder="e.g. Mention we'll follow up by Friday, keep it under 100 words…",
-    key="custom_note"
-)
+    col1, col2 = st.columns([1, 1], gap="medium")
+    with col1:
+        tone = st.selectbox(
+            label="🎭 Tone",
+            options=["Professional", "Friendly", "Apologetic", "Persuasive", "Concise"],
+            key="tone_select"
+        )
+    with col2:
+        recipient_email = st.text_input(
+            label="📬 Recipient Email",
+            placeholder="recipient@example.com",
+            key="recipient_input"
+        )
 
-st.markdown('</div>', unsafe_allow_html=True)
+    custom_note = st.text_input(
+        label="💬 Extra Instructions (optional)",
+        placeholder="e.g. Mention we'll follow up by Friday, keep it under 100 words…",
+        key="custom_note"
+    )
 
 # ── Generate button ────────────────────────────────────────────────────────────
-st.markdown("<div style='margin-top:0.25rem'></div>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 generate_clicked = st.button("⚡ Generate Reply", use_container_width=True)
 
 if generate_clicked:
@@ -348,15 +350,9 @@ if generate_clicked:
 # ── Output card ────────────────────────────────────────────────────────────────
 if st.session_state.generated_response:
     st.markdown('<hr class="mm-divider">', unsafe_allow_html=True)
-    st.markdown(
-        f'<div class="mm-label">✉️ Generated Reply '
-        f'<span class="mm-chip">{st.session_state.last_tone}</span></div>',
-        unsafe_allow_html=True
-    )
 
     edited_response = st.text_area(
-        label="edit_response",
-        label_visibility="collapsed",
+        label=f"✉️ Generated Reply [{st.session_state.last_tone}]",
         value=st.session_state.generated_response,
         height=270,
         key="edit_response",

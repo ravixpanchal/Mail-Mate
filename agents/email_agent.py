@@ -19,6 +19,7 @@ Original Email:
 
 Reply:"""
 
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    # gemini-2.0-flash works on the free tier (v1beta API)
+    model = genai.GenerativeModel("gemini-2.0-flash")
     response = model.generate_content(prompt)
     return response.text
