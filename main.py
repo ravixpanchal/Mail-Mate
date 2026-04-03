@@ -51,7 +51,9 @@ html, body, [data-testid="stAppViewContainer"] {
     padding: 2rem 1.25rem 3rem;
 }
 @media (max-width: 600px) {
-    [data-testid="block-container"] { padding: 1rem 0.75rem 2rem; }
+    [data-testid="block-container"] { padding: 0.75rem 0.6rem 2rem; }
+    .mm-hero { padding: 1.5rem 0.5rem 1rem; }
+    .stButton > button { font-size: 0.9rem !important; padding: 0.7rem 1rem; }
 }
 
 /* ── Hero ── */
@@ -75,12 +77,12 @@ html, body, [data-testid="stAppViewContainer"] {
     margin-bottom: 1rem;
 }
 .mm-hero h1 {
-    font-size: clamp(2rem, 6vw, 3rem);
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
     font-weight: 800;
     color: var(--text);
-    letter-spacing: -0.04em;
+    letter-spacing: -0.05em;
     margin: 0 0 0.4rem;
-    line-height: 1.1;
+    line-height: 1.05;
 }
 .mm-hero h1 span {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -90,9 +92,20 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 .mm-hero p {
     color: var(--muted);
-    font-size: 1.02rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
     margin: 0;
     font-weight: 500;
+}
+
+/* ── Responsive columns: stack on mobile ── */
+@media (max-width: 540px) {
+    [data-testid="stColumns"] {
+        flex-direction: column !important;
+    }
+    [data-testid="stColumns"] > div {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
 }
 
 /* ── Card ── */
@@ -289,8 +302,8 @@ textarea:focus,
 # ── Hero ───────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="mm-hero">
-    <div class="mm-badge">✨ Powered by Gemini 2.0 Flash</div>
-    <h1>📧 <span>MailMate</span></h1>
+    <div class="mm-badge">✨ Powered by Gemini 2.5 Flash</div>
+    <h1>Mail<span>Mate</span></h1>
     <p>Paste an email · pick a tone · get a polished reply in seconds</p>
 </div>
 """, unsafe_allow_html=True)
