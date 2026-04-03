@@ -4,307 +4,294 @@ from utils.email_sender import send_email
 
 st.set_page_config(
     page_title="MailMate – AI Email Responder",
-    page_icon="📧",
+    page_icon="✉",
     layout="centered",
     initial_sidebar_state="collapsed",
 )
 
-# ── CSS ────────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-    --bg: #F0F4FF;
-    --surface: #FFFFFF;
-    --surface2: #F7F9FF;
-    --accent: #4361EE;
-    --accent2: #7209B7;
-    --accent-light: #EEF2FF;
-    --border: #D8E0F0;
-    --text: #0D1B2A;
-    --muted: #64748B;
-    --success: #06D6A0;
-    --warn: #FFB703;
-    --radius: 14px;
-    --radius-sm: 8px;
-    --shadow: 0 4px 24px rgba(67,97,238,0.10);
-    --shadow-hover: 0 8px 32px rgba(67,97,238,0.18);
+    --bg:       #0A0C14;
+    --surface:  #111420;
+    --surface2: #161926;
+    --border:   #1E2235;
+    --border2:  #252A40;
+    --accent:   #7B5CF5;
+    --accent2:  #06D6A0;
+    --accent3:  #F72585;
+    --text:     #E8EAF6;
+    --muted:    #6B7280;
+    --radius:   12px;
+    --radius-sm:8px;
 }
 
-/* ── Reset & base ── */
-html, body, [data-testid="stAppViewContainer"] {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+/* ── Global ── */
+html, body,
+[data-testid="stAppViewContainer"],
+[data-testid="stApp"] {
+    font-family: 'DM Sans', sans-serif !important;
     background: var(--bg) !important;
     color: var(--text) !important;
 }
 * { box-sizing: border-box; }
 
-/* Hide Streamlit chrome */
+/* grid overlay on bg */
+[data-testid="stAppViewContainer"]::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(123,92,245,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(123,92,245,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+}
+
 #MainMenu, footer, header { visibility: hidden; }
 [data-testid="stDecoration"] { display: none; }
 
 /* ── Layout ── */
 [data-testid="block-container"] {
-    max-width: 760px;
+    max-width: 780px;
     margin: 0 auto;
-    padding: 2rem 1.25rem 3rem;
+    padding: 2rem 1.5rem 4rem;
+    position: relative;
+    z-index: 1;
 }
 @media (max-width: 600px) {
-    [data-testid="block-container"] { padding: 0.75rem 0.6rem 2rem; }
-    .mm-hero { padding: 1.5rem 0.5rem 1rem; }
-    .stButton > button { font-size: 0.9rem !important; padding: 0.7rem 1rem; }
+    [data-testid="block-container"] { padding: 1rem 0.75rem 3rem; }
 }
 
 /* ── Hero ── */
 .mm-hero {
     text-align: center;
-    padding: 2.5rem 1rem 2rem;
+    padding: 3rem 1rem 2.5rem;
 }
-.mm-badge {
+.mm-topbadge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    padding: 5px 14px;
+    gap: 10px;
+    background: rgba(123,92,245,0.08);
+    border: 1px solid rgba(123,92,245,0.25);
     border-radius: 99px;
-    border: 1px solid #C7D4FF;
-    margin-bottom: 1rem;
+    padding: 6px 18px 6px 8px;
+    margin-bottom: 1.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #A99BFF;
 }
+.mm-topbadge .dot {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--accent), #4F46E5);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    box-shadow: 0 0 12px rgba(123,92,245,0.5);
+}
+.mm-topbadge .live {
+    width: 6px; height: 6px;
+    background: var(--accent2);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--accent2);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+}
+
 .mm-hero h1 {
-    font-size: clamp(2.4rem, 8vw, 3.6rem);
-    font-weight: 800;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 14vw, 7.5rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 0.92;
+    margin: 0 0 0.3rem;
     color: var(--text);
-    letter-spacing: -0.05em;
-    margin: 0 0 0.4rem;
-    line-height: 1.05;
 }
-.mm-hero h1 span {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+.mm-hero h1 .grad {
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
+.mm-underline {
+    width: 100%;
+    max-width: 420px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    margin: 0.6rem auto 1.25rem;
+    border-radius: 99px;
+}
 .mm-hero p {
     color: var(--muted);
-    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+    font-size: clamp(0.88rem, 2.5vw, 1rem);
+    font-weight: 400;
     margin: 0;
-    font-weight: 500;
+    letter-spacing: 0.01em;
 }
 
-/* ── Responsive columns: stack on mobile ── */
+/* ── Responsive columns ── */
 @media (max-width: 540px) {
-    [data-testid="stColumns"] {
-        flex-direction: column !important;
-    }
-    [data-testid="stColumns"] > div {
-        width: 100% !important;
-        min-width: 100% !important;
-    }
+    [data-testid="stColumns"] { flex-direction: column !important; }
+    [data-testid="stColumns"] > div { width: 100% !important; min-width: 100% !important; }
 }
 
-/* ── Card ── */
-.mm-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.75rem;
-    margin-bottom: 1.25rem;
-    box-shadow: var(--shadow);
-    transition: box-shadow 0.2s;
-}
-.mm-card:hover { box-shadow: var(--shadow-hover); }
-@media (max-width: 480px) { .mm-card { padding: 1.1rem; } }
-
-/* ── Streamlit native labels ── */
+/* ── Widget labels ── */
 [data-testid="stWidgetLabel"] p,
-[data-testid="stWidgetLabel"] label,
-label[data-testid="stWidgetLabel"] {
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    font-size: 0.78rem !important;
-    font-weight: 700 !important;
+[data-testid="stWidgetLabel"] label {
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
-    color: var(--muted) !important;
+    letter-spacing: 0.1em !important;
+    color: #6B7280 !important;
 }
 
-/* ── Section labels ── */
-.mm-label {
-    font-size: 0.73rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--muted);
-    margin-bottom: 0.45rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-/* ── Textarea & inputs — THE FIX ── */
-/* Force visible text in ALL Streamlit input elements */
+/* ── Inputs & Textareas ── */
 textarea,
 .stTextInput > div > div > input,
 .stTextArea > div > div > textarea,
 [data-baseweb="textarea"] textarea,
 [data-baseweb="input"] input {
-    font-family: 'Fira Code', monospace !important;
-    font-size: 0.875rem !important;
-    color: #0D1B2A !important;          /* ← dark text, always visible */
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.85rem !important;
+    color: #E8EAF6 !important;
+    -webkit-text-fill-color: #E8EAF6 !important;
     background: var(--surface2) !important;
-    border: 1.5px solid var(--border) !important;
+    border: 1px solid var(--border2) !important;
     border-radius: var(--radius-sm) !important;
     caret-color: var(--accent) !important;
-    -webkit-text-fill-color: #0D1B2A !important; /* Safari / Webkit fix */
+    transition: border-color 0.2s, box-shadow 0.2s !important;
 }
 textarea::placeholder,
 .stTextInput > div > div > input::placeholder,
 .stTextArea > div > div > textarea::placeholder,
 [data-baseweb="textarea"] textarea::placeholder,
 [data-baseweb="input"] input::placeholder {
-    color: #A0AABA !important;
-    -webkit-text-fill-color: #A0AABA !important;
+    color: #3A3F55 !important;
+    -webkit-text-fill-color: #3A3F55 !important;
 }
 textarea:focus,
 .stTextInput > div > div > input:focus,
 .stTextArea > div > div > textarea:focus {
     border-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px rgba(67,97,238,0.13) !important;
+    box-shadow: 0 0 0 3px rgba(123,92,245,0.15), 0 0 20px rgba(123,92,245,0.08) !important;
     outline: none !important;
 }
 
 /* ── Selectbox ── */
 [data-baseweb="select"] > div {
     border-radius: var(--radius-sm) !important;
-    border: 1.5px solid var(--border) !important;
+    border: 1px solid var(--border2) !important;
     background: var(--surface2) !important;
     color: var(--text) !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-family: 'DM Sans', sans-serif !important;
     font-size: 0.9rem !important;
     font-weight: 600 !important;
 }
-[data-baseweb="select"] [data-testid="stSelectbox"] {
-    color: var(--text) !important;
+[data-baseweb="menu"] {
+    background: var(--surface2) !important;
+    border: 1px solid var(--border2) !important;
 }
-/* Dropdown option text */
 [data-baseweb="menu"] li {
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    font-size: 0.9rem !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.88rem !important;
     color: var(--text) !important;
+    background: var(--surface2) !important;
+}
+[data-baseweb="menu"] li:hover {
+    background: rgba(123,92,245,0.12) !important;
 }
 
-/* ── Primary button ── */
+/* ── Buttons ── */
 .stButton > button {
     width: 100%;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    background: linear-gradient(135deg, var(--accent) 0%, #4F46E5 100%);
     color: #fff !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-family: 'DM Sans', sans-serif !important;
     font-weight: 700 !important;
-    font-size: 0.97rem !important;
+    font-size: 0.95rem !important;
     padding: 0.8rem 1.5rem;
     border: none !important;
-    border-radius: 10px !important;
+    border-radius: var(--radius-sm) !important;
     cursor: pointer;
-    letter-spacing: 0.01em;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s;
-    box-shadow: 0 4px 18px rgba(67,97,238,0.28);
+    letter-spacing: 0.03em;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 24px rgba(123,92,245,0.3);
+    text-transform: uppercase;
 }
 .stButton > button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(67,97,238,0.38);
-    opacity: 0.96;
+    box-shadow: 0 8px 32px rgba(123,92,245,0.45);
 }
 .stButton > button:active { transform: translateY(0); }
-
-/* ── Response output ── */
-.mm-response {
-    background: #F0F5FF;
-    border: 1.5px solid #C7D9FF;
-    border-left: 4px solid var(--accent);
-    border-radius: var(--radius);
-    padding: 1.25rem 1.5rem;
-    font-family: 'Fira Code', monospace;
-    font-size: 0.875rem;
-    line-height: 1.75;
-    color: var(--text);
-    white-space: pre-wrap;
-    word-break: break-word;
-}
 
 /* ── Divider ── */
 .mm-divider {
     border: none;
-    border-top: 1px solid var(--border);
-    margin: 1.5rem 0;
-}
-
-/* ── Status badges ── */
-.mm-chip {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 3px 12px;
-    border-radius: 99px;
-    background: var(--accent-light);
-    color: var(--accent);
-    border: 1px solid #C7D4FF;
-    margin-left: 6px;
-    vertical-align: middle;
-    letter-spacing: 0.04em;
+    border-top: 1px solid var(--border2);
+    margin: 2rem 0 1.5rem;
 }
 
 /* ── Footer ── */
 .mm-footer {
     text-align: center;
-    color: #94A3B8;
-    font-size: 0.78rem;
-    margin-top: 2rem;
-    padding-top: 1rem;
+    color: #3A3F55;
+    font-size: 0.75rem;
+    margin-top: 3rem;
+    padding-top: 1.25rem;
     border-top: 1px solid var(--border);
     font-weight: 500;
+    letter-spacing: 0.03em;
 }
-.mm-footer strong {
-    color: var(--accent);
-    font-weight: 700;
-}
+.mm-footer strong { color: var(--accent); font-weight: 700; }
 
-/* ── Streamlit alerts ── */
+/* ── Streamlit chrome overrides ── */
 [data-testid="stAlert"] {
     border-radius: var(--radius-sm) !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-family: 'DM Sans', sans-serif !important;
+    background: rgba(123,92,245,0.08) !important;
+    border: 1px solid rgba(123,92,245,0.2) !important;
 }
-
-/* ── Spinner ── */
 [data-testid="stSpinner"] p {
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-family: 'DM Sans', sans-serif !important;
     color: var(--muted) !important;
 }
-
-/* ── Caption ── */
 [data-testid="stCaptionContainer"] p {
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    color: var(--muted) !important;
-    font-size: 0.78rem !important;
+    font-family: 'DM Sans', sans-serif !important;
+    color: #3A3F55 !important;
+    font-size: 0.75rem !important;
 }
+[data-testid="stCode"] { border-radius: var(--radius-sm) !important; }
 
-/* ── Code block (copy workaround) ── */
-[data-testid="stCode"] {
-    border-radius: var(--radius-sm) !important;
-}
+/* success / warning / error dark override */
+div[data-testid="stAlert"] p { color: var(--text) !important; }
 </style>
 """, unsafe_allow_html=True)
 
 # ── Hero ───────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="mm-hero">
-    <div class="mm-badge">✨ Powered by Gemini 2.5 Flash</div>
-    <h1>Mail<span>Mate</span></h1>
-    <p>Paste an email · pick a tone · get a polished reply in seconds</p>
+    <div class="mm-topbadge">
+        <div class="dot">✦</div>
+        <span>AI Email</span>
+        &nbsp;·&nbsp;
+        <span>Gemini</span>
+        &nbsp;·&nbsp;
+        <span>2026</span>
+        <div class="live"></div>
+    </div>
+    <h1>Mail<br><span class="grad">Mate</span></h1>
+    <div class="mm-underline"></div>
+    <p>Paste an email &nbsp;·&nbsp; pick a tone &nbsp;·&nbsp; get a polished reply in seconds</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -314,45 +301,44 @@ if "generated_response" not in st.session_state:
 if "last_tone" not in st.session_state:
     st.session_state.last_tone = ""
 
-# ── Input card ─────────────────────────────────────────────────────────────────
-# Use Streamlit's native label system styled via CSS (avoids blank ghost boxes)
+# ── Inputs ─────────────────────────────────────────────────────────────────────
 with st.container():
     email_text = st.text_area(
-        label="📨 Original Email",
+        label="Original Email",
         placeholder="Paste the email you received here…",
-        height=190,
+        height=200,
         key="email_input"
     )
 
     col1, col2 = st.columns([1, 1], gap="medium")
     with col1:
         tone = st.selectbox(
-            label="🎭 Tone",
+            label="Tone",
             options=["Professional", "Friendly", "Apologetic", "Persuasive", "Concise"],
             key="tone_select"
         )
     with col2:
         recipient_email = st.text_input(
-            label="📬 Recipient Email",
+            label="Recipient Email",
             placeholder="recipient@example.com",
             key="recipient_input"
         )
 
     custom_note = st.text_input(
-        label="💬 Extra Instructions (optional)",
-        placeholder="e.g. Mention we'll follow up by Friday, keep it under 100 words…",
+        label="Extra Instructions (optional)",
+        placeholder="e.g. Follow up by Friday, keep it under 100 words…",
         key="custom_note"
     )
 
-# ── Generate button ────────────────────────────────────────────────────────────
+# ── Generate ───────────────────────────────────────────────────────────────────
 st.markdown("<br>", unsafe_allow_html=True)
-generate_clicked = st.button("⚡ Generate Reply", use_container_width=True)
+generate_clicked = st.button("⚡  GENERATE REPLY", use_container_width=True)
 
 if generate_clicked:
     if not email_text.strip():
-        st.warning("⚠️ Please paste the email content first.")
+        st.warning("Please paste the email content first.")
     else:
-        with st.spinner("Gemini is drafting your reply…"):
+        with st.spinner("Drafting your reply…"):
             try:
                 result = generate_email_response(email_text, tone, custom_note)
                 st.session_state.generated_response = result
@@ -360,38 +346,37 @@ if generate_clicked:
             except Exception as e:
                 st.error(f"Generation failed: {e}")
 
-# ── Output card ────────────────────────────────────────────────────────────────
+# ── Output ─────────────────────────────────────────────────────────────────────
 if st.session_state.generated_response:
     st.markdown('<hr class="mm-divider">', unsafe_allow_html=True)
 
     edited_response = st.text_area(
-        label=f"✉️ Generated Reply [{st.session_state.last_tone}]",
+        label=f"Generated Reply  [{st.session_state.last_tone}]",
         value=st.session_state.generated_response,
-        height=270,
+        height=280,
         key="edit_response",
-        help="You can edit the reply before sending."
+        help="Edit the reply before sending."
     )
-    st.caption("✏️ Feel free to edit the reply above before sending.")
+    st.caption("You can edit the reply above before sending.")
 
     col_copy, col_send = st.columns([1, 1], gap="small")
-
     with col_copy:
-        if st.button("📋 Copy to Clipboard", use_container_width=True):
+        if st.button("COPY TO CLIPBOARD", use_container_width=True):
             st.code(edited_response, language="")
             st.info("Select the text above and copy (Ctrl+C / Cmd+C)")
 
     with col_send:
-        send_clicked = st.button("🚀 Send Email", use_container_width=True)
+        send_clicked = st.button("SEND EMAIL", use_container_width=True)
         if send_clicked:
             if not recipient_email.strip():
-                st.warning("⚠️ Enter a recipient email before sending.")
+                st.warning("Enter a recipient email before sending.")
             else:
                 with st.spinner(f"Sending to {recipient_email}…"):
                     status = send_email(recipient_email, edited_response)
                     if status:
-                        st.success(f"✅ Email sent to **{recipient_email}**!")
+                        st.success(f"Email sent to {recipient_email}!")
                     else:
-                        st.error("❌ Sending failed. Check your SMTP secrets.")
+                        st.error("Sending failed. Check your SMTP secrets.")
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
 st.markdown("""
