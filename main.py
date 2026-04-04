@@ -185,28 +185,58 @@ textarea,
 [data-baseweb="input"] input {
     font-family: 'JetBrains Mono', monospace !important;
     font-size: 0.85rem !important;
-    color: #E8EAF6 !important;
-    -webkit-text-fill-color: #E8EAF6 !important;
-    background: var(--surface2) !important;
-    border: 1px solid var(--border2) !important;
-    border-radius: var(--radius-sm) !important;
-    caret-color: var(--accent) !important;
-    transition: border-color 0.2s, box-shadow 0.2s !important;
+    line-height: 1.7 !important;
+    color: #A7F3C0 !important;
+    -webkit-text-fill-color: #A7F3C0 !important;
+    background: linear-gradient(160deg, #071510 0%, #0A1C0F 60%, #061210 100%) !important;
+    border: 1px solid rgba(34,197,94,0.35) !important;
+    border-radius: 10px !important;
+    caret-color: var(--accent2) !important;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
+    box-shadow:
+        0 0 0 1px rgba(34,197,94,0.08) inset,
+        0 2px 12px rgba(0,0,0,0.5),
+        0 0 24px rgba(34,197,94,0.04) !important;
 }
+
+/* Glowing left accent bar on the textarea wrapper */
+.stTextArea > div {
+    border-left: 2px solid rgba(34,197,94,0.4) !important;
+    border-radius: 10px !important;
+    padding-left: 0 !important;
+    box-shadow: -4px 0 18px rgba(34,197,94,0.08) !important;
+    transition: border-color 0.25s, box-shadow 0.25s !important;
+}
+.stTextArea > div:focus-within {
+    border-left-color: var(--accent) !important;
+    box-shadow: -6px 0 28px rgba(34,197,94,0.2) !important;
+}
+
+/* Placeholder */
 textarea::placeholder,
 .stTextInput > div > div > input::placeholder,
 .stTextArea > div > div > textarea::placeholder,
 [data-baseweb="textarea"] textarea::placeholder,
 [data-baseweb="input"] input::placeholder {
-    color: #1A3320 !important;
-    -webkit-text-fill-color: #1A3320 !important;
+    color: rgba(34,197,94,0.22) !important;
+    -webkit-text-fill-color: rgba(34,197,94,0.22) !important;
+    font-style: italic !important;
 }
+
+/* Focus state — vivid green glow */
 textarea:focus,
 .stTextInput > div > div > input:focus,
 .stTextArea > div > div > textarea:focus {
     border-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px rgba(34,197,94,0.15), 0 0 20px rgba(34,197,94,0.08) !important;
+    background: linear-gradient(160deg, #081a12 0%, #0D2416 60%, #081510 100%) !important;
+    box-shadow:
+        0 0 0 3px rgba(34,197,94,0.12) inset,
+        0 0 0 2px rgba(34,197,94,0.18),
+        0 0 32px rgba(34,197,94,0.15),
+        0 0 64px rgba(34,197,94,0.06) !important;
     outline: none !important;
+    color: #DCFCE7 !important;
+    -webkit-text-fill-color: #DCFCE7 !important;
 }
 
 /* ── Selectbox ── */
