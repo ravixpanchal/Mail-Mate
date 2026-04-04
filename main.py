@@ -3,7 +3,7 @@ from agents.email_agent import generate_email_response
 from utils.email_sender import send_email
 
 st.set_page_config(
-    page_title="MailMate – AI Email Responder",
+    page_title="Reply Nexa – AI Email Responder",
     page_icon="✉",
     layout="centered",
     initial_sidebar_state="collapsed",
