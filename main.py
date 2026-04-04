@@ -149,8 +149,11 @@ html, body,
     text-align: center;
 }
 
-/* ── Responsive columns ── */
-@media (max-width: 600px) {
+/* ── Responsive ── */
+@media (max-width: 640px) {
+    [data-testid="block-container"] {
+        padding: 0.75rem 0.6rem 3rem !important;
+    }
     [data-testid="stColumns"] {
         flex-direction: column !important;
         gap: 0.5rem !important;
@@ -158,11 +161,38 @@ html, body,
     [data-testid="stColumns"] > div {
         width: 100% !important;
         min-width: 100% !important;
+        flex: 1 1 100% !important;
     }
     .mm-hero-title {
-        font-size: clamp(3rem, 18vw, 5rem);
-        white-space: normal;
-        word-break: break-word;
+        font-size: clamp(2.8rem, 16vw, 4.5rem) !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        letter-spacing: 0.02em !important;
+    }
+    .mm-hero {
+        padding: 1.75rem 0.5rem 1.75rem !important;
+    }
+    .mm-topbadge {
+        font-size: 0.6rem !important;
+        padding: 5px 12px 5px 6px !important;
+        gap: 7px !important;
+    }
+    .stButton > button {
+        font-size: 0.85rem !important;
+        padding: 0.7rem 1rem !important;
+    }
+    textarea,
+    .stTextArea > div > div > textarea {
+        font-size: 0.8rem !important;
+        min-height: 140px !important;
+    }
+}
+@media (max-width: 400px) {
+    .mm-hero-title {
+        font-size: clamp(2.2rem, 18vw, 3.5rem) !important;
+    }
+    [data-testid="block-container"] {
+        padding: 0.5rem 0.4rem 2rem !important;
     }
 }
 
@@ -199,17 +229,20 @@ textarea,
         0 0 24px rgba(34,197,94,0.04) !important;
 }
 
-/* Glowing left accent bar on the textarea wrapper */
-.stTextArea > div {
-    border-left: 2px solid rgba(34,197,94,0.4) !important;
+/* ── Seamless wrapper — strip all extra borders that cause corner gaps ── */
+.stTextArea > div,
+.stTextInput > div,
+.stTextArea > div > div,
+.stTextInput > div > div,
+[data-baseweb="textarea"],
+[data-baseweb="input"],
+[data-baseweb="base-input"] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
     border-radius: 10px !important;
-    padding-left: 0 !important;
-    box-shadow: -4px 0 18px rgba(34,197,94,0.08) !important;
-    transition: border-color 0.25s, box-shadow 0.25s !important;
-}
-.stTextArea > div:focus-within {
-    border-left-color: var(--accent) !important;
-    box-shadow: -6px 0 28px rgba(34,197,94,0.2) !important;
+    padding: 0 !important;
 }
 
 /* Placeholder */
