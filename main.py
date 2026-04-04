@@ -11,7 +11,7 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
     --bg:       #0A0C14;
@@ -38,7 +38,7 @@ html, body,
 }
 * { box-sizing: border-box; }
 
-/* grid overlay on bg */
+/* grid overlay */
 [data-testid="stAppViewContainer"]::before {
     content: '';
     position: fixed;
@@ -70,7 +70,12 @@ html, body,
 .mm-hero {
     text-align: center;
     padding: 3rem 1rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
 .mm-topbadge {
     display: inline-flex;
     align-items: center;
@@ -107,21 +112,26 @@ html, body,
     50%      { opacity: 0.3; }
 }
 
-.mm-hero h1 {
+/* ── FIXED: Hero title — single line, horizontally centered ── */
+.mm-hero-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(4rem, 14vw, 7.5rem);
+    font-size: clamp(4rem, 16vw, 8rem);
     font-weight: 400;
-    letter-spacing: 0.02em;
-    line-height: 0.92;
+    letter-spacing: 0.04em;
+    line-height: 1;
     margin: 0 0 0.3rem;
     color: var(--text);
+    white-space: nowrap;
+    text-align: center;
+    width: 100%;
 }
-.mm-hero h1 .grad {
+.mm-hero-title .grad {
     background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
+
 .mm-underline {
     width: 100%;
     max-width: 420px;
@@ -132,16 +142,28 @@ html, body,
 }
 .mm-hero p {
     color: var(--muted);
-    font-size: clamp(0.88rem, 2.5vw, 1rem);
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
     font-weight: 400;
     margin: 0;
     letter-spacing: 0.01em;
+    text-align: center;
 }
 
 /* ── Responsive columns ── */
-@media (max-width: 540px) {
-    [data-testid="stColumns"] { flex-direction: column !important; }
-    [data-testid="stColumns"] > div { width: 100% !important; min-width: 100% !important; }
+@media (max-width: 600px) {
+    [data-testid="stColumns"] {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    [data-testid="stColumns"] > div {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+    .mm-hero-title {
+        font-size: clamp(3rem, 18vw, 5rem);
+        white-space: normal;
+        word-break: break-word;
+    }
 }
 
 /* ── Widget labels ── */
@@ -234,6 +256,18 @@ textarea:focus,
 }
 .stButton > button:active { transform: translateY(0); }
 
+/* ── Section label ── */
+.mm-section-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+    margin-top: 0.25rem;
+}
+
 /* ── Divider ── */
 .mm-divider {
     border: none;
@@ -271,7 +305,6 @@ textarea:focus,
 }
 [data-testid="stCode"] { border-radius: var(--radius-sm) !important; }
 
-/* success / warning / error dark override */
 div[data-testid="stAlert"] p { color: var(--text) !important; }
 </style>
 """, unsafe_allow_html=True)
@@ -288,9 +321,11 @@ st.markdown("""
         <span>2026</span>
         <div class="live"></div>
     </div>
-    <h1>Reply<br><span class="grad">Nexa</span></h1>
+    <div class="mm-hero-title">
+        REPLY&nbsp;<span class="grad">NEXA</span>
+    </div>
     <div class="mm-underline"></div>
-    <p>Paste an email &nbsp;·&nbsp; pick a tone &nbsp;·&nbsp; get a polished reply in seconds</p>
+    <p>Paste an email &nbsp;·&nbsp; pick a tone &nbsp;·&nbsp; choose a language &nbsp;·&nbsp; get a polished reply</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -299,6 +334,17 @@ if "generated_response" not in st.session_state:
     st.session_state.generated_response = ""
 if "last_tone" not in st.session_state:
     st.session_state.last_tone = ""
+if "last_language" not in st.session_state:
+    st.session_state.last_language = ""
+
+# ── Language options ───────────────────────────────────────────────────────────
+LANGUAGES = [
+    "English", "Hindi", "Spanish", "French", "German",
+    "Portuguese", "Arabic", "Japanese", "Chinese (Simplified)",
+    "Korean", "Italian", "Russian", "Bengali", "Gujarati",
+    "Marathi", "Tamil", "Telugu", "Kannada", "Punjabi",
+    "Dutch", "Polish", "Turkish", "Vietnamese", "Thai",
+]
 
 # ── Inputs ─────────────────────────────────────────────────────────────────────
 with st.container():
@@ -309,6 +355,7 @@ with st.container():
         key="email_input"
     )
 
+    # Row 1: Tone + Language
     col1, col2 = st.columns([1, 1], gap="medium")
     with col1:
         tone = st.selectbox(
@@ -317,11 +364,19 @@ with st.container():
             key="tone_select"
         )
     with col2:
-        recipient_email = st.text_input(
-            label="Recipient Email",
-            placeholder="recipient@example.com",
-            key="recipient_input"
+        language = st.selectbox(
+            label="Reply Language",
+            options=LANGUAGES,
+            key="language_select",
+            help="The generated reply will be written in this language."
         )
+
+    # Row 2: Recipient email (full width)
+    recipient_email = st.text_input(
+        label="Recipient Email",
+        placeholder="recipient@example.com",
+        key="recipient_input"
+    )
 
     custom_note = st.text_input(
         label="Extra Instructions (optional)",
@@ -339,9 +394,12 @@ if generate_clicked:
     else:
         with st.spinner("Drafting your reply…"):
             try:
-                result = generate_email_response(email_text, tone, custom_note)
+                result = generate_email_response(
+                    email_text, tone, custom_note, language
+                )
                 st.session_state.generated_response = result
                 st.session_state.last_tone = tone
+                st.session_state.last_language = language
             except Exception as e:
                 st.error(f"Generation failed: {e}")
 
@@ -349,8 +407,9 @@ if generate_clicked:
 if st.session_state.generated_response:
     st.markdown('<hr class="mm-divider">', unsafe_allow_html=True)
 
+    lang_tag = f" · {st.session_state.last_language}" if st.session_state.last_language else ""
     edited_response = st.text_area(
-        label=f"Generated Reply  [{st.session_state.last_tone}]",
+        label=f"Generated Reply  [{st.session_state.last_tone}{lang_tag}]",
         value=st.session_state.generated_response,
         height=280,
         key="edit_response",

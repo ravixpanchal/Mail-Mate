@@ -11,8 +11,14 @@ FREE_TIER_MODELS = [
     "gemini-2.0-flash",             # last resort
 ]
 
-def generate_email_response(email_text: str, tone: str, custom_note: str = "") -> str:
+def generate_email_response(
+    email_text: str,
+    tone: str,
+    custom_note: str = "",
+    language: str = "English"
+) -> str:
     extra = f"\nAdditional context or instruction: {custom_note}" if custom_note.strip() else ""
+    lang_note = "" if language == "English" else f"\n- Write the entire reply in {language}. Do NOT translate the sign-off name if it is provided; keep proper nouns as-is."
 
     prompt = f"""You are a professional email assistant. Write a polished, well-structured reply to the following email using a {tone.lower()} tone.
 
@@ -20,7 +26,7 @@ Guidelines:
 - Be concise and clear
 - Match the {tone.lower()} tone throughout
 - Include a proper greeting and sign-off
-- Do NOT include a subject line{extra}
+- Do NOT include a subject line{lang_note}{extra}
 
 Original Email:
 {email_text}
@@ -35,14 +41,11 @@ Reply:"""
             return response.text
         except Exception as e:
             err_str = str(e)
-            # Only skip to next model on quota / not-found errors
             if any(code in err_str for code in ["429", "404", "quota", "not found", "not supported"]):
                 last_error = e
                 continue
-            # For any other error, raise immediately
             raise e
 
-    # All models exhausted
     raise Exception(
         f"All free-tier models are currently quota-limited. "
         f"Please wait a few minutes and try again, or check your quota at "
