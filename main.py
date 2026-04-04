@@ -239,6 +239,42 @@ textarea:focus,
     -webkit-text-fill-color: #DCFCE7 !important;
 }
 
+/* ── Kill Streamlit/BaseWeb red focus ring on ALL wrapper containers ── */
+[data-baseweb="textarea"],
+[data-baseweb="input"],
+[data-baseweb="base-input"],
+[data-baseweb="textarea"] > div,
+[data-baseweb="input"] > div,
+[data-baseweb="base-input"] > div,
+.stTextArea > div > div,
+.stTextInput > div > div,
+[data-testid="stTextArea"] > div,
+[data-testid="stTextInput"] > div {
+    border-color: rgba(34,197,94,0.35) !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+[data-baseweb="textarea"]:focus-within,
+[data-baseweb="input"]:focus-within,
+[data-baseweb="base-input"]:focus-within,
+[data-baseweb="textarea"] > div:focus-within,
+[data-baseweb="input"] > div:focus-within,
+[data-baseweb="base-input"] > div:focus-within,
+.stTextArea > div > div:focus-within,
+.stTextInput > div > div:focus-within {
+    border-color: var(--accent) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(34,197,94,0.18), 0 0 32px rgba(34,197,94,0.12) !important;
+}
+/* Nuclear option — catch any remaining Streamlit red ring */
+*:focus, *:focus-visible, *:focus-within {
+    outline-color: var(--accent) !important;
+}
+textarea:focus-visible,
+input:focus-visible {
+    outline: none !important;
+}
+
 /* ── Selectbox ── */
 [data-baseweb="select"] > div {
     border-radius: var(--radius-sm) !important;
