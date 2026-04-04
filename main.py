@@ -288,7 +288,7 @@ st.markdown("""
         <span>2026</span>
         <div class="live"></div>
     </div>
-    <h1>Mail<br><span class="grad">Mate</span></h1>
+    <h1>Reply<br><span class="grad">Nexa</span></h1>
     <div class="mm-underline"></div>
     <p>Paste an email &nbsp;·&nbsp; pick a tone &nbsp;·&nbsp; get a polished reply in seconds</p>
 </div>
